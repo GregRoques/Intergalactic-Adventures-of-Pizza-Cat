@@ -1,0 +1,228 @@
+/* ===================================================================== */
+/* Body */
+
+#body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.header {
+  width: inherit;
+  height: 4 rem;
+  top: 0;
+  left: 0;
+  margin:0;
+  padding: .75rem;
+  color: white;
+  font-size: 2rem;
+  position: absolute;
+  z-index: 200;
+  font-family: "Cute Font", sans-serif;
+}
+
+.gameplay{
+  width: inherit;
+  height: inherit;
+  position: absolute;
+  z-index:500
+}
+
+.header .lives {
+  margin:absolute;
+  z-index: 300;
+  position:inherit;
+  text-align: left;
+}
+
+.header .score {
+  position: absolute;
+  z-index: 300;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin: 0;
+  text-align: center;
+}
+
+/* ===================================================================================================== */
+/* Space Background */
+
+@keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+@-webkit-keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+@-moz-keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+@-ms-keyframes move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+
+@keyframes move-clouds-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 10000px 0;
+  }
+}
+@-webkit-keyframes move-clouds-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 10000px 0;
+  }
+}
+@-moz-keyframes move-clouds-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 10000px 0;
+  }
+}
+@-ms-keyframes move-clouds-back {
+  from {
+    background-position: 0;
+  }
+  to {
+    background-position: 10000px 0;
+  }
+}
+
+.stars,
+.twinkling,
+.clouds,
+.planet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stars {
+  background: black
+    url(images/stars.png) repeat top
+    center;
+  z-index: 0;
+}
+
+.twinkling {
+  background: transparent
+    url(images/twinkling.png) repeat
+    top center;
+  z-index: 1;
+
+  -moz-animation: move-twink-back 200s linear infinite;
+  -ms-animation: move-twink-back 200s linear infinite;
+  -o-animation: move-twink-back 200s linear infinite;
+  -webkit-animation: move-twink-back 200s linear infinite;
+  animation: move-twink-back 200s linear infinite;
+}
+
+.planet {
+  background: transparent url(images/test2.png) no-repeat top right;
+  background-size: 25%;
+  filter: grayscale(65%);
+  display: relative;
+  margin-top: 50px;
+  margin-right: 100px;
+  z-index: 2;
+}
+
+.clouds {
+  background: transparent
+    url(images/clouds3.png) repeat top
+    center;
+  z-index: 3;
+
+  -moz-animation: move-clouds-back 200s linear infinite;
+  -ms-animation: move-clouds-back 200s linear infinite;
+  -o-animation: move-clouds-back 200s linear infinite;
+  -webkit-animation: move-clouds-back 200s linear infinite;
+  animation: move-clouds-back 200s linear infinite;
+}
+
+.imgNotLoaded {
+  opacity: 0;
+}
+
+.imgLoaded {
+  opacity: 1;
+  transition: opacity .5s linear;
+}
+
+/* ===================================================================================================== */
+/* Enemy Rotation */
+
+@keyframes rotation {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 359deg;
+  }
+}
+
+.enImg {
+  object-fit: contain;
+  /* position:absolute; */
+  animation: rotation 1s infinite linear;
+  /* width:100%;
+    height:100%; */
+}
+
+.blinkAnimation {
+  animation: blink 0.25s infinite;
+}
+
+@keyframes blink {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeOut {
+  opacity: 0;
+  animation: fadeOutAnimation 250s;
+}
+
+@keyframes fadeOutAnimation {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
