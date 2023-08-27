@@ -211,7 +211,6 @@ class User extends UniversalFunctions {
   }
 
   loseLife() {
-    if (this.life < 1) return;
     this.life--;
     const domLives = document.getElementById("lives");
     domLives.innerHTML = this.life;
@@ -223,16 +222,15 @@ class User extends UniversalFunctions {
         this.invincible = false;
       }, 1000);
     }
-  }
-
-  killCat() {
-    delete this;
-    const killPizzaCat = document.getElementById("pizza-cat");
-    killPizzaCat.src = "images/boom.png";
-    const aftermath = document.getElementById("gamePlay");
-    setTimeout(() => {
-      aftermath.remove();
-    }, 250);
+    if (this.life < 1) {
+      delete this;
+      const killPizzaCat = document.getElementById("pizza-cat");
+      killPizzaCat.src = "images/boom.png";
+      const aftermath = document.getElementById("gamePlay");
+      setTimeout(() => {
+        aftermath.remove();
+      }, 250);
+    }
   }
 
   addScore() {
@@ -420,7 +418,6 @@ function start(diffType = 1) {
   const gameInterval = setInterval(() => {
     // =================================== end game if user dead
     if (user.life < 1) {
-      user.killCat();
       clearInterval(gameInterval);
       return gameOver();
     }
