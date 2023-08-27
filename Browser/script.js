@@ -16,6 +16,7 @@ window.onload = function () {
       imageHeight: 350,
       imageAlt: "Start Screen",
       inputLabel: "Select Difficulty",
+      allowOutsideClick: false,
       footer:
         "<div style='font-weight: bold;color:#7066E0'>Keyboard arrow keys navigate——space bar shoots</div>",
       input: "select",
@@ -25,7 +26,7 @@ window.onload = function () {
         3: "Hard",
       },
     }).then((res) => {
-      const difSelect = parseInt(res.value)
+      const difSelect = parseInt(res.value);
       const submit = difSelect > 0 && difSelect < 4 ? difSelect : 1;
       start(submit);
     });
@@ -110,33 +111,24 @@ class User extends UniversalFunctions {
   }
 
   create() {
-    return new Promise((resolve, reject) => {
-      try {
-        this.player = document.createElement("img");
-        this.player.setAttribute("data-src", "");
-        this.player.src = "images/cat-neutral.png";
-        this.player.width = 75;
-        this.player.id = "pizza-cat";
-        this.player.height = 75;
-        this.player.style.position = "relative";
-        this.player.style.zIndex = 500;
-        this.player.style.transform = `translate(${this.x}px, ${this.y}px)`;
-        this.player.classList.add("imgNotLoaded");
-        document.getElementById("gamePlay").appendChild(this.player);
-        if (this.player.complete) {
-          this.launchUser();
-          return resolve(true);
-        } else {
-          this.player.addEventListener("load", () => {
-            this.launchUser();
-            return resolve(true);
-          });
-        }
-      } catch (err) {
-        console.log(err);
-        return reject();
-      }
-    });
+    this.player = document.createElement("img");
+    this.player.setAttribute("data-src", "");
+    this.player.src = "images/cat-neutral.png";
+    this.player.width = 75;
+    this.player.id = "pizza-cat";
+    this.player.height = 75;
+    this.player.style.position = "relative";
+    this.player.style.zIndex = 500;
+    this.player.style.transform = `translate(${this.x}px, ${this.y}px)`;
+    this.player.classList.add("imgNotLoaded");
+    document.getElementById("gamePlay").appendChild(this.player);
+    if (this.player.complete) {
+      this.launchUser();
+    } else {
+      this.player.addEventListener("load", () => {
+        this.launchUser();
+      });
+    }
   }
 
   launchUser() {
@@ -176,7 +168,7 @@ class User extends UniversalFunctions {
   }
 
   addNewEnemy(speed) {
-    if(this.life < 1) return;
+    if (this.life < 1) return;
     const isRotate = super.getRandomInt(10) % 2 === 0 && this.score > 6000;
     const newEnemy = new Enemy(speed, this.difficulty, isRotate);
     newEnemy.create();
@@ -184,7 +176,7 @@ class User extends UniversalFunctions {
   }
 
   move() {
-    if(this.life < 1) return;
+    if (this.life < 1) return;
     const dist = 0.75;
     if (this.directions.ArrowLeft) {
       this.x -= dist;
@@ -219,7 +211,7 @@ class User extends UniversalFunctions {
   }
 
   loseLife() {
-    if(this.life < 1 ) return;
+    if (this.life < 1) return;
     this.life--;
     const domLives = document.getElementById("lives");
     domLives.innerHTML = this.life;
@@ -238,13 +230,13 @@ class User extends UniversalFunctions {
     const killPizzaCat = document.getElementById("pizza-cat");
     killPizzaCat.src = "images/boom.png";
     const aftermath = document.getElementById("gamePlay");
-      setTimeout(() => {
-        aftermath.remove();
-      }, 250);
+    setTimeout(() => {
+      aftermath.remove();
+    }, 250);
   }
 
   addScore() {
-    if(this.score >= 9999999900) return;
+    if (this.score >= 9999999900) return;
     this.score += 100;
     const domScore = document.getElementById("score");
     domScore.innerHTML = this.score;
@@ -422,69 +414,56 @@ class Enemy extends UniversalFunctions {
 // ========================================================================================
 // Start Game
 
-function start(diffType=1) {
+function start(diffType = 1) {
   const user = new User(parseInt(diffType));
-  user.create().then(() => {
-    const gameInterval = setInterval(() => {
-      // =================================== end game if user dead
-      if(user.life <1){
-        user.killCat();
-        clearInterval(gameInterval);
-        return gameOver();
-      }
-      // =================================== move user
-      user.move();
-      // =================================== move bullets
-      if (user.weapon.active.length > 0) {
-        user.weapon.active.forEach((fire) => {
-          fire.move(user);
-        });
-      }
+  user.create();
+  const gameInterval = setInterval(() => {
+    // =================================== end game if user dead
+    if (user.life < 1) {
+      user.killCat();
+      clearInterval(gameInterval);
+      return gameOver();
+    }
+    // =================================== move user
+    user.move();
+    // =================================== move bullets
+    if (user.weapon.active.length > 0) {
+      user.weapon.active.forEach((fire) => {
+        fire.move(user);
+      });
+    }
 
-      // =================================== spawn enemies
+    // =================================== spawn enemies
 
-      if (user.score <= 2000 && user.enemies.length < 5) {
-        user.addNewEnemy(0);
-      }
-      if (user.score > 2000 && user.score <= 4000 && user.enemies.length < 10) {
-        user.addNewEnemy(0.5);
-      }
-      if (user.score > 4000 && user.score <= 6000 && user.enemies.length < 10) {
-        user.addNewEnemy(1);
-      }
-      if (user.score > 6000 && user.score <= 8000 && user.enemies.length < 10) {
-        user.addNewEnemy(1.5);
-      }
-      if (
-        user.score > 8000 &&
-        user.score <= 10000 &&
-        user.enemies.length < 15
-      ) {
-        user.addNewEnemy(2);
-      }
-      if (
-        user.score > 10000 &&
-        user.score <= 12000 &&
-        user.enemies.length < 15
-      ) {
-        user.addNewEnemy(3);
-      }
-      if (
-        user.score > 12000 &&
-        user.score <= 14000 &&
-        user.enemies.length < 15
-      ) {
-        user.addNewEnemy(4);
-      }
-      if (user.score > 14000 && user.enemies.length < 15) {
-        user.addNewEnemy(5);
-      }
-      // =================================== move enemies
-        user.enemies.forEach((antagonist) => {
-          antagonist.move(user);
-        });
-    }, 1);
-  });
+    if (user.score <= 2000 && user.enemies.length < 5) {
+      user.addNewEnemy(0);
+    }
+    if (user.score > 2000 && user.score <= 4000 && user.enemies.length < 10) {
+      user.addNewEnemy(0.5);
+    }
+    if (user.score > 4000 && user.score <= 6000 && user.enemies.length < 10) {
+      user.addNewEnemy(1);
+    }
+    if (user.score > 6000 && user.score <= 8000 && user.enemies.length < 10) {
+      user.addNewEnemy(1.5);
+    }
+    if (user.score > 8000 && user.score <= 10000 && user.enemies.length < 15) {
+      user.addNewEnemy(2);
+    }
+    if (user.score > 10000 && user.score <= 12000 && user.enemies.length < 15) {
+      user.addNewEnemy(3);
+    }
+    if (user.score > 12000 && user.score <= 14000 && user.enemies.length < 15) {
+      user.addNewEnemy(4);
+    }
+    if (user.score > 14000 && user.enemies.length < 15) {
+      user.addNewEnemy(5);
+    }
+    // =================================== move enemies
+    user.enemies.forEach((antagonist) => {
+      antagonist.move(user);
+    });
+  }, 1);
 }
 
 function gameOver() {
@@ -494,7 +473,7 @@ function gameOver() {
       imageHeight: 350,
       imageAlt: "Game Over",
       timer: 5000,
-      confirmButtonText:'<i class="fa fa-thumbs-up"></i> Play Again!',
+      confirmButtonText: '<i class="fa fa-thumbs-up"></i> Play Again!',
     }).then(() => {
       location.reload();
     });
