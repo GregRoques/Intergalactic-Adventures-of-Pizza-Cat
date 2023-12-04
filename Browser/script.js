@@ -1,4 +1,4 @@
-"use strict";
+//"use strict";
 
 // ================================================================ onLoad
 window.onload = function () {
