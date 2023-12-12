@@ -78,6 +78,9 @@ window.onload = function () {
 
 // =======================================================================
 // Classes
+let isActive = true;
+let keydown;
+let keyup;
 
 // ================================== Extensible Functions Class
 class UniversalFunctions {
@@ -135,16 +138,17 @@ class User extends UniversalFunctions {
     const domLives = document.getElementById("lives");
     domLives.innerHTML = this.life;
     this.player.classList.add("imgLoaded");
-    document.addEventListener("keydown", (e) => this.updateKeyDict(e, this));
-    document.addEventListener("keyup", (e) => this.updateKeyDict(e, this));
+    keydown = document.addEventListener("keydown", (e) =>
+      this.updateKeyDict(e, this)
+    );
+    keyup = document.addEventListener("keyup", (e) =>
+      this.updateKeyDict(e, this)
+    );
   }
 
   updateKeyDict(e, user) {
     //e.preventDefault();
-    if (user.life < 1) {
-      document.removeEventListener(e.type.toString(), e.currentTarget);
-      return;
-    }
+    if (!isActive) return;
 
     const { weapon, x, y, directions, player } = user;
     const k = e.code;
@@ -159,6 +163,7 @@ class User extends UniversalFunctions {
     ) {
       weapon.isHold = true;
       setTimeout(() => {
+        if (!isActive) return;
         weapon.isHold = false;
       }, 150);
       const fire = new Fire(x, y + player.height / 2);
@@ -168,7 +173,7 @@ class User extends UniversalFunctions {
   }
 
   addNewEnemy(speed) {
-    if (this.life < 1) return;
+    if (!isActive) return;
     const isRotate = super.getRandomInt(10) % 2 === 0 && this.score > 6000;
     const newEnemy = new Enemy(speed, this.difficulty, isRotate);
     newEnemy.create();
@@ -176,7 +181,7 @@ class User extends UniversalFunctions {
   }
 
   move() {
-    if (this.life < 1) return;
+    if (!isActive) return;
     const dist = 0.75;
     if (this.directions.ArrowLeft) {
       this.x -= dist;
@@ -211,6 +216,7 @@ class User extends UniversalFunctions {
   }
 
   loseLife() {
+    if (!isActive) return;
     this.life--;
     const domLives = document.getElementById("lives");
     domLives.innerHTML = this.life;
@@ -218,26 +224,23 @@ class User extends UniversalFunctions {
       this.invincible = true;
       this.player.classList.add("blinkAnimation");
       setTimeout(() => {
+        if (!isActive) return;
         this.player.classList.remove("blinkAnimation");
         this.invincible = false;
       }, 1000);
     }
-    if (this.life < 1) {
-      delete this;
-      const killPizzaCat = document.getElementById("pizza-cat");
-      killPizzaCat.src = "images/boom.png";
-      const aftermath = document.getElementById("gamePlay");
-      setTimeout(() => {
-        aftermath.remove();
-      }, 250);
-    }
   }
 
   addScore() {
-    if (this.score >= 9999999900) return;
+    if (this.score >= 9999999900 || !isActive) return;
     this.score += 100;
     const domScore = document.getElementById("score");
     domScore.innerHTML = this.score;
+    if (this.score % 5000 === 0) {
+      const domLives = document.getElementById("lives");
+      this.life++;
+      domLives.innerHTML = this.life;
+    }
   }
 }
 
@@ -252,6 +255,7 @@ class Fire extends UniversalFunctions {
     this.y = UserY;
   }
   create() {
+    if (!isActive) return;
     this.player = document.createElement("img");
     this.player.setAttribute("data-src", "");
     this.player.id = `peperoni_${super.getRandomInt(100000)}`;
@@ -264,11 +268,13 @@ class Fire extends UniversalFunctions {
     document.getElementById("gamePlay").appendChild(this.player);
   }
   move(user) {
+    if (!isActive) return;
     this.player.style.transform = `translate(${this.x}px, ${this.y}px)`;
     this.x += 1.5;
     if (this.x >= window.innerWidth + this.player.width || this.x >= 1500) {
       this.player.classList.add("fadeOut");
       setTimeout(() => {
+        if (!isActive) return;
         const fireElement = document.getElementById(this.player.id);
         fireElement.remove();
         user.weapon.active.splice(user.weapon.active.indexOf(this), 1);
@@ -296,6 +302,7 @@ class Enemy extends UniversalFunctions {
   }
 
   create() {
+    if (!isActive) return;
     this.player = document.createElement("img");
     this.player.setAttribute("data-src", "");
     this.player.style.position = "absolute";
@@ -330,6 +337,7 @@ class Enemy extends UniversalFunctions {
   }
 
   collision(obj) {
+    if (!isActive) return;
     return (
       obj.x < this.x + this.player.width &&
       obj.x > this.x &&
@@ -339,6 +347,7 @@ class Enemy extends UniversalFunctions {
   }
 
   move(user) {
+    if (!isActive) return;
     this.x--;
     if (this.rotate) {
       if (!this.reverse) {
@@ -360,7 +369,7 @@ class Enemy extends UniversalFunctions {
 
     const enemyElement = document.getElementById(this.player.id);
 
-    if (this.x < -250) {
+    if (this.x < -250 && isActive) {
       enemyElement.remove();
       return user.enemies.splice(user.enemies.indexOf(this), 1);
     }
@@ -368,13 +377,14 @@ class Enemy extends UniversalFunctions {
     this.player.style.transform = `translate(${this.x}px, ${this.y}px)`;
 
     // player collision
-    if (!user.invincible) {
+    if (!user.invincible && isActive) {
       if (this.collision(user, this)) {
         user.loseLife();
         user.enemies.splice(user.enemies.indexOf(this), 1);
         if (user.life > 0) {
           enemyElement.src = "images/boom.png";
           setTimeout(() => {
+            if (!isActive) return;
             enemyElement.remove();
           }, 250);
         }
@@ -385,6 +395,7 @@ class Enemy extends UniversalFunctions {
     }
     // bullet collision
     user.weapon.active.forEach((shot) => {
+      if (!isActive) return;
       if (this.collision(shot, this)) {
         var fireElement = document.getElementById(shot.player.id);
         fireElement.remove();
@@ -393,10 +404,11 @@ class Enemy extends UniversalFunctions {
         if (this.life > 0) {
           this.player.style.opacity = 0;
           setTimeout(() => {
+            if (!isActive) return;
             this.player.style.opacity = 1;
           }, 100);
         }
-        if (this.life <= 0) {
+        if (this.life <= 0 && isActive) {
           user.addScore();
           user.enemies.splice(user.enemies.indexOf(this), 1);
           enemyElement.src = "images/boom.png";
@@ -415,17 +427,62 @@ class Enemy extends UniversalFunctions {
 function start(diffType = 1) {
   const user = new User(parseInt(diffType));
   user.create();
+  let time = 180;
+  let minutes = 2;
+  let seconds = 59;
+  const timer = setInterval(() => {
+    const timerDisplay = document.getElementById("time");
+    if (!isActive) {
+      return clearInterval(timer);
+    }
+    time--;
+    if (time < 1) {
+      minutes = 0;
+      seconds = 0;
+      return clearInterval(timer);
+    }
+    if (time % 60 === 0) {
+      minutes--;
+      seconds = 59;
+    } else {
+      seconds--;
+    }
+    timerDisplay.innerHTML = `${minutes}:${
+      seconds > 9 ? seconds : "0" + seconds
+    }`;
+  }, 1000);
   const gameInterval = setInterval(() => {
     // =================================== end game if user dead
-    if (user.life < 1) {
-      clearInterval(gameInterval);
-      return gameOver();
+    if (user.life < 1 || time < 1) {
+      isActive = false;
+    }
+    if (!isActive) {
+      document.removeEventListener("keydown", keydown);
+      document.removeEventListener("keyup", keyup);
+      user.directions = {
+        ArrowDown: false,
+        ArrowUp: false,
+        ArrowLeft: false,
+        ArrowRight: false,
+      };
+      const killPizzaCat = document.getElementById("pizza-cat");
+      killPizzaCat.src = "images/boom.png";
+      setTimeout(() => {
+        const aftermath = document.getElementById("gamePlay");
+        aftermath.style.display = "none";
+        gameOver(
+          user.score,
+          `${minutes}:${seconds > 9 ? seconds : "0" + seconds}`
+        );
+      }, 250);
+      return clearInterval(gameInterval);
     }
     // =================================== move user
     user.move();
     // =================================== move bullets
     if (user.weapon.active.length > 0) {
       user.weapon.active.forEach((fire) => {
+        if (!isActive) return;
         fire.move(user);
       });
     }
@@ -441,34 +498,39 @@ function start(diffType = 1) {
     if (user.score > 4000 && user.score <= 6000 && user.enemies.length < 10) {
       user.addNewEnemy(1);
     }
-    if (user.score > 6000 && user.score <= 8000 && user.enemies.length < 10) {
+    if (user.score > 6000 && user.score <= 8000 && user.enemies.length < 15) {
       user.addNewEnemy(1.5);
     }
     if (user.score > 8000 && user.score <= 10000 && user.enemies.length < 15) {
       user.addNewEnemy(2);
     }
-    if (user.score > 10000 && user.score <= 12000 && user.enemies.length < 15) {
+    if (user.score > 10000 && user.score <= 12000 && user.enemies.length < 20) {
       user.addNewEnemy(3);
     }
-    if (user.score > 12000 && user.score <= 14000 && user.enemies.length < 15) {
+    if (user.score > 12000 && user.score <= 14000 && user.enemies.length < 20) {
       user.addNewEnemy(4);
     }
-    if (user.score > 14000 && user.enemies.length < 15) {
-      user.addNewEnemy(5);
+    if (user.score > 14000 && user.enemies.length < 25) {
+      user.addNewEnemy(6);
+    }
+    if (user.score > 16000 && user.enemies.length < 25) {
+      user.addNewEnemy(8);
     }
     // =================================== move enemies
     user.enemies.forEach((antagonist) => {
+      if (!isActive) return;
       antagonist.move(user);
     });
   }, 1);
 }
 
-function gameOver() {
+function gameOver(score, time) {
   try {
     Swal.fire({
       imageUrl: "images/exitScreen.jpg",
       imageHeight: 350,
       imageAlt: "Game Over",
+      text: `Score: ${score} pts. | Time: ${time}`,
       timer: 5000,
       confirmButtonText: '<i class="fa fa-thumbs-up"></i> Play Again!',
     }).then(() => {
