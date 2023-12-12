@@ -13,8 +13,8 @@
   height: 4 rem;
   top: 0;
   left: 0;
-  margin:0;
-  padding: .75rem;
+  margin: 0;
+  padding: 0.75rem;
   color: white;
   font-size: 2rem;
   position: absolute;
@@ -22,17 +22,17 @@
   font-family: "Cute Font", sans-serif;
 }
 
-.gameplay{
+.gameplay {
   width: inherit;
   height: inherit;
   position: absolute;
-  z-index:500
+  z-index: 500;
 }
 
 .header .lives {
-  margin:absolute;
+  //margin-right:100px;
   z-index: 300;
-  position:inherit;
+  position: inherit;
   text-align: left;
 }
 
@@ -43,6 +43,14 @@
   transform: translate(-50%, 0);
   margin: 0;
   text-align: center;
+}
+
+.header .time {
+  //margin-left:100px;
+  z-index: 300;
+  position: inherit;
+  right: 2.5rem;
+  text-align: right;
 }
 
 /* ===================================================================================================== */
@@ -129,16 +137,12 @@
 }
 
 .stars {
-  background: black
-    url(images/stars.png) repeat top
-    center;
+  background: black url(images/stars.png) repeat top center;
   z-index: 0;
 }
 
 .twinkling {
-  background: transparent
-    url(images/twinkling.png) repeat
-    top center;
+  background: transparent url(images/twinkling.png) repeat top center;
   z-index: 1;
 
   -moz-animation: move-twink-back 200s linear infinite;
@@ -159,9 +163,7 @@
 }
 
 .clouds {
-  background: transparent
-    url(images/clouds3.png) repeat top
-    center;
+  background: transparent url(images/clouds3.png) repeat top center;
   z-index: 3;
 
   -moz-animation: move-clouds-back 200s linear infinite;
@@ -177,7 +179,7 @@
 
 .imgLoaded {
   opacity: 1;
-  transition: opacity .5s linear;
+  transition: opacity 0.5s linear;
 }
 
 /* ===================================================================================================== */
