@@ -2,42 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Traverse ghastly gastronomic gusts of solar sustenance with our fearless pie-riding feline in this retro space shooter." />
+    <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=[YOUR_ID]"></script>
+     <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '[YOUR_ID]');
+    </script>
     <!-- No Index -->
-    <meta name="robots" content="noindex" />
-    <meta name="robots" content="noimageindex" />
-    <meta name="googlebot" content="noindex" />
-    <meta name="googlebot" content="noimageindex" />
+    <meta name="robots" content="noindex, noimageindex" />
+    <meta name="googlebot" content="noindex, noimageindex" />
     <!-- Tab Title and Icon -->
-    <title>Pizza Cat</title>
+    <title>Intergalactic Adventures of Pizza Cat</title>
     <link rel="shortcut icon" href="images/logo-ico.png" />
     <!-- Social Media -->
     <meta property="og:title" content="Intergalactic Adventures of Pizza Cat" />
-    <meta
-      property="og:description"
-      content="Traverse gastly gastronomic gusts of solar sustenance with our fearless pie-riding feline."
-    />
+    <meta property="og:description" content="Traverse ghastly gastronomic gusts of solar sustenance with our fearless pie-riding feline." />
     <meta property="og:image" content="/images/startScreen.jpg" />
-    <meta property="og:url" content="http://www.gregroques.com/pizz-cat" />
-    <meta property="og:type" content="Game" />
+    <meta property="og:url" content="http://www.ilovepizzacat.com" />
+    <meta property="og:type" content="website" />
     <meta property="og:locale" content="en-US" />
-    <meta
-      property="og:site_name"
-      content="Intergalactic Adventures of Pizza Cat"
-    />
+    <meta property="og:site_name" content="Intergalactic Adventures of Pizza Cat" />
     <!-- Style Sheets -->
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap" rel="stylesheet" />
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script src="script.js" defer></script>
   </head>
-  <body id="body">
+  <body class="body">
     <div class="stars"></div>
     <div class="twinkling"></div>
     <div class="planet"></div>
@@ -47,6 +45,16 @@
       <span class="score" id="score">0</span>
       <span class="time" id="time">3:00</span>
     </div>
-    <div class="gamePlay" id="gamePlay"></div>
+    <div class="gameplay" id="gamePlay"></div>
+    <!-- Mobile touch controls (shown only on touch devices via CSS) -->
+    <div class="touch-controls" id="touchControls">
+      <div class="touch-dpad" id="touchDpad">
+        <div class="touch-dpad-btn touch-dpad-up" data-dir="ArrowUp">&#9650;</div>
+        <div class="touch-dpad-btn touch-dpad-down" data-dir="ArrowDown">&#9660;</div>
+        <div class="touch-dpad-btn touch-dpad-left" data-dir="ArrowLeft">&#9664;</div>
+        <div class="touch-dpad-btn touch-dpad-right" data-dir="ArrowRight">&#9654;</div>
+      </div>
+      <div class="touch-fire-btn" id="touchFire">FIRE</div>
+    </div>
   </body>
 </html>
