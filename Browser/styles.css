@@ -1,16 +1,23 @@
 /* ===================================================================== */
-/* Body */
+/* Global / Body                                                         */
+/* ===================================================================== */
 
-#body {
+/* Root body styling — fills viewport, hides overflow */
+.body {
   width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
 }
 
+/* ===================================================================== */
+/* HUD Header                                                            */
+/* ===================================================================== */
+
+/* Top-bar container for lives, score, and timer */
 .header {
   width: inherit;
-  height: 4 rem;
+  height: 4rem;
   top: 0;
   left: 0;
   margin: 0;
@@ -22,20 +29,14 @@
   font-family: "Cute Font", sans-serif;
 }
 
-.gameplay {
-  width: inherit;
-  height: inherit;
-  position: absolute;
-  z-index: 500;
-}
-
+/* Lives counter — left-aligned */
 .header .lives {
-  //margin-right:100px;
   z-index: 300;
   position: inherit;
   text-align: left;
 }
 
+/* Score display — centered horizontally */
 .header .score {
   position: absolute;
   z-index: 300;
@@ -45,83 +46,41 @@
   text-align: center;
 }
 
+/* Timer display — right-aligned */
 .header .time {
-  //margin-left:100px;
   z-index: 300;
   position: inherit;
   right: 2.5rem;
   text-align: right;
 }
 
-/* ===================================================================================================== */
-/* Space Background */
+/* ===================================================================== */
+/* Game Play Area                                                        */
+/* ===================================================================== */
+
+/* Container for all game entities */
+.gameplay {
+  width: inherit;
+  height: inherit;
+  position: absolute;
+  z-index: 500;
+}
+
+/* ===================================================================== */
+/* Space Background                                                      */
+/* ===================================================================== */
 
 @keyframes move-twink-back {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -10000px 5000px;
-  }
-}
-@-webkit-keyframes move-twink-back {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -10000px 5000px;
-  }
-}
-@-moz-keyframes move-twink-back {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -10000px 5000px;
-  }
-}
-@-ms-keyframes move-twink-back {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -10000px 5000px;
-  }
+  from { background-position: 0 0; }
+  to   { background-position: -10000px 5000px; }
 }
 
 @keyframes move-clouds-back {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 10000px 0;
-  }
-}
-@-webkit-keyframes move-clouds-back {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 10000px 0;
-  }
-}
-@-moz-keyframes move-clouds-back {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 10000px 0;
-  }
-}
-@-ms-keyframes move-clouds-back {
-  from {
-    background-position: 0;
-  }
-  to {
-    background-position: 10000px 0;
-  }
+  from { background-position: 0 0; }
+  to   { background-position: 10000px 0; }
 }
 
+/* Shared fullscreen layer for all background elements */
 .stars,
 .twinkling,
 .clouds,
@@ -136,95 +95,265 @@
   display: block;
 }
 
+/* Static star field — base background layer */
 .stars {
   background: black url(images/stars.png) repeat top center;
   z-index: 0;
 }
 
+/* Animated twinkling overlay */
 .twinkling {
   background: transparent url(images/twinkling.png) repeat top center;
   z-index: 1;
-
-  -moz-animation: move-twink-back 200s linear infinite;
-  -ms-animation: move-twink-back 200s linear infinite;
-  -o-animation: move-twink-back 200s linear infinite;
-  -webkit-animation: move-twink-back 200s linear infinite;
   animation: move-twink-back 200s linear infinite;
 }
 
+/* Cat-licking-earth background image — top-right, desaturated */
 .planet {
   background: transparent url(images/test2.png) no-repeat top right;
   background-size: 25%;
   filter: grayscale(65%);
-  display: relative;
   margin-top: 50px;
   margin-right: 100px;
   z-index: 2;
 }
 
+/* Animated cloud/nebula overlay */
 .clouds {
   background: transparent url(images/clouds3.png) repeat top center;
   z-index: 3;
-
-  -moz-animation: move-clouds-back 200s linear infinite;
-  -ms-animation: move-clouds-back 200s linear infinite;
-  -o-animation: move-clouds-back 200s linear infinite;
-  -webkit-animation: move-clouds-back 200s linear infinite;
   animation: move-clouds-back 200s linear infinite;
 }
 
-.imgNotLoaded {
+/* ===================================================================== */
+/* Game Entity Styles                                                     */
+/* ===================================================================== */
+
+/* Player character — positioned via transform in JS */
+.player-sprite {
+  position: relative;
+  z-index: 500;
+}
+
+/* Bullet / pepperoni projectile */
+.fire-sprite {
+  position: absolute;
+  z-index: 400;
+}
+
+/* Enemy food item */
+.enemy-sprite {
+  position: absolute;
+  z-index: 500;
+}
+
+/* ===================================================================== */
+/* Image Loading States                                                  */
+/* ===================================================================== */
+
+/* Hidden until image loads */
+.img-not-loaded {
   opacity: 0;
 }
 
-.imgLoaded {
+/* Fade-in after image loads */
+.img-loaded {
   opacity: 1;
   transition: opacity 0.5s linear;
 }
 
-/* ===================================================================================================== */
-/* Enemy Rotation */
+/* ===================================================================== */
+/* Enemy Z-Axis Spin                                                     */
+/* Enemies are positioned via left/top so transform is free for rotation. */
+/* ===================================================================== */
 
-@keyframes rotation {
-  from {
-    rotate: 0deg;
-  }
-  to {
-    rotate: 359deg;
-  }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
-.enImg {
+/* Base spin applied to every enemy — requires a speed-tier modifier */
+.enemy-spin {
   object-fit: contain;
-  /* position:absolute; */
-  animation: rotation 1s infinite linear;
-  /* width:100%;
-    height:100%; */
+  animation: spin var(--spin-duration, 2s) infinite linear;
 }
 
-.blinkAnimation {
+/* Counter-clockwise variant */
+.enemy-spin-reverse {
+  animation-direction: reverse;
+}
+
+/* Speed tier 1 — slow drift */
+.spin-speed-1 { --spin-duration: 4s; }
+
+/* Speed tier 2 — gentle roll */
+.spin-speed-2 { --spin-duration: 2.5s; }
+
+/* Speed tier 3 — moderate spin */
+.spin-speed-3 { --spin-duration: 1.5s; }
+
+/* Speed tier 4 — fast spin */
+.spin-speed-4 { --spin-duration: 0.8s; }
+
+/* Speed tier 5 — rapid tumble */
+.spin-speed-5 { --spin-duration: 0.4s; }
+
+/* ===================================================================== */
+/* Hit / Damage Effects                                                  */
+/* ===================================================================== */
+
+@keyframes blink {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Blinking invincibility effect after taking damage */
+.blink-animation {
   animation: blink 0.25s infinite;
 }
 
-@keyframes blink {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.fadeOut {
-  opacity: 0;
-  animation: fadeOutAnimation 250s;
-}
-
 @keyframes fadeOutAnimation {
-  from {
-    opacity: 1;
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Fade-out for off-screen bullets */
+.fade-out {
+  opacity: 0;
+  animation: fadeOutAnimation 250ms;
+}
+
+/* ===================================================================== */
+/* SweetAlert Custom Styles                                              */
+/* ===================================================================== */
+
+/* Instruction text in the start dialog footer */
+.swal-footer-instructions {
+  font-weight: bold;
+  color: #7066E0;
+}
+
+/* Responsive SweetAlert popup sizing */
+.swal2-popup {
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+.swal2-image {
+  max-height: min(350px, 40vh) !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+/* ===================================================================== */
+/* Mobile Touch Controls                                                 */
+/* ===================================================================== */
+
+/* Wrapper for all on-screen touch controls */
+.touch-controls {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* D-pad container — bottom-left */
+.touch-dpad {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 150px;
+  height: 150px;
+  pointer-events: auto;
+}
+
+/* Shared base style for d-pad directional buttons */
+.touch-dpad-btn {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  color: white;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+/* Active/pressed state for d-pad buttons */
+.touch-dpad-btn-active {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* D-pad Up button position */
+.touch-dpad-up {
+  top: 0;
+  left: 50px;
+}
+
+/* D-pad Down button position */
+.touch-dpad-down {
+  bottom: 0;
+  left: 50px;
+}
+
+/* D-pad Left button position */
+.touch-dpad-left {
+  top: 50px;
+  left: 0;
+}
+
+/* D-pad Right button position */
+.touch-dpad-right {
+  top: 50px;
+  right: 0;
+}
+
+/* Fire button — bottom-right */
+.touch-fire-btn {
+  position: absolute;
+  bottom: 40px;
+  right: 30px;
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 80, 80, 0.35);
+  border: 2px solid rgba(255, 80, 80, 0.6);
+  border-radius: 50%;
+  color: white;
+  font-size: 1rem;
+  font-family: "Cute Font", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+/* Active/pressed state for fire button */
+.touch-fire-btn-active {
+  background: rgba(255, 80, 80, 0.6);
+}
+
+/* Show touch controls only on touch-capable devices (phones/tablets) */
+@media (hover: none) and (pointer: coarse) {
+  .touch-controls {
+    display: block;
   }
-  to {
-    opacity: 0;
-  }
+}
+
+/* Hide touch controls when a gamepad is connected (toggled via JS) */
+.touch-controls-hidden {
+  display: none !important;
 }
